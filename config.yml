@@ -1,0 +1,21 @@
+app:
+   debug: false
+logger:
+  level: info
+admin:
+  email: kralexol@ya.ru
+  password: adminPass
+session:
+  key: SnJQwbZ1aTkpf9KqEbLsfl5A5HsoPnKwZ948dln5oCI=
+database:
+  host: 0.0.0.0
+  port: 5432
+  user: chief
+  password: chief_paSS
+  database: hundred2one
+bot:
+  token: vk1.a.RTe7vgt8Ser0JYM0n_JmeSV5meLiAnUZV-eZVb8klDjvK0O9yjEyiMSUtPXFaq_44lkF3bPWsYx3vvv4BopRtyUj46_NXQAqgEc-BAeHqrqa1nTRzRDIryflHHPVjK2tN9skPShL_bEfz_cGPa1N7jpVyNlTPPe5_xFfS3D60N8czAH0slM1Iuf8n9psAx7g-MPlKdO9yj1jIjj_Iz43-w
+  group_id: 218728299
+queue:
+  enable: true
+  url: amqp://guest:guest@localhost/
