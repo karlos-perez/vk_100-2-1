@@ -19,14 +19,13 @@ class GameResponse:
         message = Message(peer_id=chat_id, text=Text.invite, buttons=kb.begin_game())
         return await self.app.store.vk_api.send_message(message)
 
-    async def send_game_rules(self, chat_id: int, message_id: int):
+    async def send_game_rules(self, chat_id: int):
         message = Message(
-            user_id=message_id,
             peer_id=chat_id,
             text=Text.rules,
             buttons=kb.start_button(),
         )
-        await self.app.store.vk_api.send_message_edit(message)
+        await self.app.store.vk_api.send_message(message)
 
     async def send_begin_game(self, chat_id: int, message_id: int):
         message = Message(

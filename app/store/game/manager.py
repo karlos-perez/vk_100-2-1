@@ -94,7 +94,7 @@ class GameManager:
         # View rulers
         if type_event == BotAction.rules_game:
             await self.response.send_game_rules(
-                chat_id, self.conversation_message_id[chat_id]
+                chat_id
             )
         # Start game
         elif type_event == BotAction.start_game:
