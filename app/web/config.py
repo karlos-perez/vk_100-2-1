@@ -39,6 +39,11 @@ class DatabaseConfig:
 
 
 @dataclass
+class GameConfig:
+    sum_score: int = 100
+
+
+@dataclass
 class QueueConfig:
     enable: bool
     url: str
@@ -52,6 +57,7 @@ class Config:
     logger: LoggerConfig = None
     session: SessionConfig = None
     queue: QueueConfig = None
+    game: GameConfig = None
 
 
 def get_database_url(conf) -> str:
@@ -89,4 +95,5 @@ def setup_config(app: "Application", config_path):
         queue=QueueConfig(
             enable=raw_config["queue"]["enable"], url=raw_config["queue"]["url"]
         ),
+        game=GameConfig(sum_score=raw_config["game"]["sum_score"]),
     )

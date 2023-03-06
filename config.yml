@@ -19,3 +19,5 @@ bot:
 queue:
   enable: true
   url: amqp://guest:guest@localhost/
+game:
+  sum_score: 100  # Sum score answers

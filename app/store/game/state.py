@@ -30,9 +30,11 @@ class GameState:
         for g in games:
             if self.get_active_game(g.chat_id):
                 # Close unstopped games due to a crash
-                self.logger.info(f"CLOSE GAME: id:{g.id} status: {g.status}"
-                                 f" date_start: {g.date_begin} date_end: {g.date_end}"
-                                 f"question_id: {g.question_id}")
+                self.logger.info(
+                    f"CLOSE GAME: id:{g.id} status: {g.status}"
+                    f" date_start: {g.date_begin} date_end: {g.date_end}"
+                    f"question_id: {g.question_id}"
+                )
                 values = {"status": STATUS_ERROR, "date_end": datetime.now()}
                 await self.app.store.game.update_game(g.id, values)
             else:
@@ -119,7 +121,7 @@ class GameState:
             return self.get_question_in_str(chat_id)
         else:
             format_answer = self.format_question_games.get(chat_id)
-            if not format_answer: # Not question
+            if not format_answer:  # Not question
                 return None
             answers_all = list(self.get_answers(chat_id))
             guessed = self.get_guessed(chat_id)

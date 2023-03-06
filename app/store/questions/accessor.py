@@ -1,6 +1,6 @@
 import random
 
-from sqlalchemy import select
+from sqlalchemy import select, delete
 
 from sqlalchemy.orm import joinedload
 
@@ -38,8 +38,17 @@ class QuestionAccessor(BaseAccessor):
             async with session.begin():
                 return await session.scalar(query)
 
-    async def list_questions(self) -> list[QuestionModel]:
-        query = select(QuestionModel).options(joinedload(QuestionModel.answers))
+    async def list_questions(
+        self, question_id: int | None = None
+    ) -> list[QuestionModel]:
+        if question_id is None:
+            query = select(QuestionModel).options(joinedload(QuestionModel.answers))
+        else:
+            query = (
+                select(QuestionModel)
+                .where(QuestionModel.id == question_id)
+                .options(joinedload(QuestionModel.answers))
+            )
         async with self.app.database.session() as session:
             async with session.begin():
                 result = await session.scalars(query)
@@ -52,3 +61,9 @@ class QuestionAccessor(BaseAccessor):
                 ids = await session.scalars(query)
                 random_id = random.choice(list(ids))
                 return await self.get_question_by_id(random_id)
+
+    async def delete_question(self, question_id: int):
+        query = delete(QuestionModel).where(QuestionModel.id == question_id)
+        async with self.app.database.session() as session:
+            async with session.begin():
+                return await session.execute(query)

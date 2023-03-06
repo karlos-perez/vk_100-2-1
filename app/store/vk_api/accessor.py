@@ -59,7 +59,7 @@ class VkApiAccessor(BaseAccessor):
                 params={
                     "group_id": self.app.config.bot.group_id,
                     "access_token": self.app.config.bot.token,
-                    "lp_version": 3
+                    "lp_version": 3,
                 },
             )
         ) as resp:
@@ -72,17 +72,17 @@ class VkApiAccessor(BaseAccessor):
 
     async def poll(self):
         url = self._build_query(
-                host=self.server,
-                method="",
-                params={
-                    "act": "a_check",
-                    "key": self.key,
-                    "ts": self.ts,
-                    "wait": 30,
-                    "mode": 2,
-                    "version": 3
-        },
-            )
+            host=self.server,
+            method="",
+            params={
+                "act": "a_check",
+                "key": self.key,
+                "ts": self.ts,
+                "wait": 30,
+                "mode": 2,
+                "version": 3,
+            },
+        )
         # self.logger.info(url)
         async with self.session.get(url) as resp:
             data = await resp.json()
@@ -179,4 +179,3 @@ class VkApiAccessor(BaseAccessor):
         async with self.session.get(url) as resp:
             data = await resp.json()
             self.logger.info(data)
-

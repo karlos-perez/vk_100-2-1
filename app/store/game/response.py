@@ -64,10 +64,7 @@ class GameResponse:
         else:
             game_stat = ""
         if reason == STATUS_STOPPED:
-            text = (
-                f"{Text.end_stopped.format(user=user.fullname)}"
-                f"{game_stat}"
-            )
+            text = f"{Text.end_stopped.format(user=user.fullname)}" f"{game_stat}"
         elif reason == STATUS_FINISH:
             text = f"{Text.end_finish}{game_stat}"
         else:

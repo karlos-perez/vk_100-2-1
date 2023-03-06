@@ -12,11 +12,7 @@ def ok_response(data: list | dict):
 
 
 def error_response(status: str, message: str, data: dict = {}):
-    return {
-        "status": status,
-        "message": message,
-        "data": data
-    }
+    return {"status": status, "message": message, "data": data}
 
 
 def use_inspector(conn):

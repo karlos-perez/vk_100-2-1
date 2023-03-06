@@ -57,7 +57,9 @@ class GameManager:
         await self.state.get_or_create_user(user_id)
         text = data["message"]["text"].strip().lower()
         if data["message"].get("conversation_message_id"):
-            self.conversation_message_id[chat_id] = data["message"].get("conversation_message_id")
+            self.conversation_message_id[chat_id] = data["message"].get(
+                "conversation_message_id"
+            )
         # Сhecking that the message came from the chat
         if chat_id > 2000000000:
             if self.state.get_active_game(chat_id) is None:
@@ -93,9 +95,7 @@ class GameManager:
             self.conversation_message_id[chat_id] = data.get("conversation_message_id")
         # View rulers
         if type_event == BotAction.rules_game:
-            await self.response.send_game_rules(
-                chat_id
-            )
+            await self.response.send_game_rules(chat_id)
         # Start game
         elif type_event == BotAction.start_game:
             await self.game_action_start(user_id, chat_id)

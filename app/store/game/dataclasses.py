@@ -11,10 +11,12 @@ class BotCommand:
 @dataclass
 class BotAction:
     """For button callback"""
+
     start_game: str = "start_new_game"
     stop_game: str = "stop_game"
     rules_game: str = "game_rules"
     touch_answer: str = "touch_answer_button"
+
 
 @dataclass
 class Message:

@@ -44,6 +44,7 @@ def store(server) -> Store:
 def db_session(server):
     return server.database.session
 
+
 # DB transaction rollback
 # @pytest.fixture
 # async def db_session(server):
@@ -91,6 +92,7 @@ async def clear_db(server):
 # Mock VK_api accessor
 @pytest.fixture(scope="session", autouse=True)
 def vk_api():
-    with patch("app.store.vk_api.accessor.VkApiAccessor",
-               AsyncMock(spec=VkApiAccessor)):
+    with patch(
+        "app.store.vk_api.accessor.VkApiAccessor", AsyncMock(spec=VkApiAccessor)
+    ):
         yield

@@ -3,9 +3,10 @@ from aiohttp_apispec import docs, querystring_schema, request_schema, response_s
 
 from app.questions.models import AnswerModel
 from app.questions.schemes import (
-    ListQuestionSchema,
     QuestionSchema,
     ListQuestionResponseSchema,
+    QuestionIdSchema,
+    QuestionDeleteSchema,
 )
 from app.web.app import View
 from app.web.mixins import AuthRequiredMixin
@@ -27,6 +28,14 @@ class QuestionAddView(AuthRequiredMixin, View):
         # Validation: unique title question
         if await self.store.questions.get_question_by_title(data["title"]) is not None:
             raise HTTPConflict(text="Question title is not unique")
+        # Validation: sum score answers
+        sum_score = 0
+        for a in data["answers"]:
+            sum_score += a["score"]
+        if sum_score != self.config.game.sum_score:
+            raise HTTPConflict(
+                text=f"Sum scores answers should be equal to {self.config.game.sum_score}"
+            )
         answers_list = []
         for answer in data["answers"]:
             answers_list.append(
@@ -41,11 +50,31 @@ class QuestionAddView(AuthRequiredMixin, View):
 
 class QuestionListView(AuthRequiredMixin, View):
     @docs(
-        tags=["questions"], summary="List questions", description="List all questions"
+        tags=["questions"],
+        summary="Get questions",
+        description="Get question by ID or list all questions",
     )
+    @querystring_schema(QuestionIdSchema)
     @response_schema(ListQuestionResponseSchema, 200)
     async def get(self):
-        questions = await self.store.questions.list_questions()
+        question_id = self.request.query.get("question_id")
+        if question_id:
+            question_id = int(question_id)
+        questions = await self.store.questions.list_questions(question_id)
         return json_response(
             data={"questions": [QuestionSchema().dump(q) for q in questions]}
         )
+
+
+class QuestionDeleteView(AuthRequiredMixin, View):
+    @docs(
+        tags=["questions"], summary="Delete questions", description="Delete questions"
+    )
+    @querystring_schema(QuestionDeleteSchema)
+    @response_schema(ListQuestionResponseSchema, 200)
+    async def get(self):
+        question_id = int(self.request.query.get("question_id"))
+        if await self.store.questions.get_question_by_id(question_id) is None:
+            raise HTTPConflict(text=f"Question with this id not found")
+        await self.store.questions.delete_question(question_id)
+        return json_response(data={"result": "Question successfully deleted"})
