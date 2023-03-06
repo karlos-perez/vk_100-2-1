@@ -84,3 +84,66 @@ class TestAdminCurrentView:
         assert data == error_response(
             status="unauthorized", message="401: Unauthorized"
         )
+
+
+class TestAdminStatistic:
+    url = "/admin.statistic"
+
+    async def test_success(self, authed_cli, question_1, game_1, user_1):
+        response = await authed_cli.get(self.url)
+        assert response.status == 200
+        data = await response.json()
+        assert data == ok_response(
+            {"games_count": 1, "users_count": 1, "questions_count": 1}
+        )
+
+    async def test_unauthorized(self, cli, config):
+        response = await cli.get(self.url)
+        assert response.status == 401
+        data = await response.json()
+        assert data == error_response(
+            status="unauthorized", message="401: Unauthorized"
+        )
+
+
+class TestAdminUserStatistic:
+    url = "/admin.statistic.users"
+
+    async def test_success(self, authed_cli, question_1, user_1, game_1, participant_1):
+        response = await authed_cli.get(self.url)
+        assert response.status == 200
+        data = await response.json()
+        assert data == ok_response(
+            {
+                "users_count": 1,
+                "users": [{"fullname": "Noname Nobody", "games": 1, "scores": 13}],
+            }
+        )
+
+    async def test_unauthorized(self, cli, config):
+        response = await cli.get(self.url)
+        assert response.status == 401
+        data = await response.json()
+        assert data == error_response(
+            status="unauthorized", message="401: Unauthorized"
+        )
+
+
+class TestAdminGameStatistic:
+    url = "/admin.statistic.games"
+
+    async def test_success(self, authed_cli, question_1, user_1, game_1, game_2):
+        response = await authed_cli.get(self.url)
+        assert response.status == 200
+        data = await response.json()
+        assert data == ok_response(
+            {"games_count": 2, "games": [{"status": "Игра запущенна", "count": 2}]}
+        )
+
+    async def test_unauthorized(self, cli, config):
+        response = await cli.get(self.url)
+        assert response.status == 401
+        data = await response.json()
+        assert data == error_response(
+            status="unauthorized", message="401: Unauthorized"
+        )

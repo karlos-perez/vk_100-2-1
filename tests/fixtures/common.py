@@ -1,5 +1,6 @@
 import logging
 import pathlib
+from datetime import datetime
 from unittest.mock import AsyncMock, patch
 
 import pytest
@@ -15,6 +16,8 @@ from app.web.config import Config
 
 
 BASE_DIR = pathlib.Path(__file__).parent.parent
+
+DEFAULT_TIME = datetime(2022, 3, 6, 0)
 
 
 @pytest.fixture(scope="session")
