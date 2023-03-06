@@ -1,7 +1,7 @@
 from aiohttp.web_exceptions import HTTPConflict, HTTPBadRequest, HTTPNotFound
 from aiohttp_apispec import docs, querystring_schema, request_schema, response_schema
 
-from app.questions.models import AnswerModel
+from app.questions.models import AnswerModel, Answer
 from app.questions.schemes import (
     QuestionSchema,
     ListQuestionResponseSchema,
@@ -10,6 +10,7 @@ from app.questions.schemes import (
 )
 from app.web.app import View
 from app.web.mixins import AuthRequiredMixin
+from app.web.schemes import OkResponseSchema
 from app.web.utils import json_response
 
 
@@ -38,9 +39,7 @@ class QuestionAddView(AuthRequiredMixin, View):
             )
         answers_list = []
         for answer in data["answers"]:
-            answers_list.append(
-                AnswerModel(title=answer["title"], score=answer["score"])
-            )
+            answers_list.append(Answer(title=answer["title"], score=answer["score"]))
         question = await self.store.questions.create_question(
             title=data["title"], answers=answers_list
         )
@@ -71,10 +70,10 @@ class QuestionDeleteView(AuthRequiredMixin, View):
         tags=["questions"], summary="Delete questions", description="Delete questions"
     )
     @querystring_schema(QuestionDeleteSchema)
-    @response_schema(ListQuestionResponseSchema, 200)
-    async def get(self):
+    @response_schema(OkResponseSchema, 200)
+    async def delete(self):
         question_id = int(self.request.query.get("question_id"))
         if await self.store.questions.get_question_by_id(question_id) is None:
             raise HTTPConflict(text=f"Question with this id not found")
         await self.store.questions.delete_question(question_id)
-        return json_response(data={"result": "Question successfully deleted"})
+        return json_response(data={"message": "Question successfully deleted"})

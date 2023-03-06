@@ -47,6 +47,10 @@ class View(AiohttpView):
     def data(self) -> dict:
         return self.request.get("data", {})
 
+    @property
+    def config(self) -> dict:
+        return self.request.app.config
+
 
 app = Application()
 

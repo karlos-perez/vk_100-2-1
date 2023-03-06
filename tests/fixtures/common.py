@@ -8,7 +8,7 @@ from aiohttp.test_utils import TestClient, loop_context
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.store import Store, Database
+from app.store import Store
 from app.store.vk_api.accessor import VkApiAccessor
 from app.web.app import setup_app, Application
 from app.web.config import Config

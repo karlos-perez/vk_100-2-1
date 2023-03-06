@@ -5,13 +5,11 @@ from sqlalchemy import select, delete
 from sqlalchemy.orm import joinedload
 
 from app.store.base_accessor import BaseAccessor
-from app.questions.models import AnswerModel, QuestionModel
+from app.questions.models import AnswerModel, QuestionModel, Answer
 
 
 class QuestionAccessor(BaseAccessor):
-    async def create_question(
-        self, title: str, answers: list[AnswerModel]
-    ) -> QuestionModel:
+    async def create_question(self, title: str, answers: list[Answer]) -> QuestionModel:
         answers_list = [AnswerModel(title=a.title, score=a.score) for a in answers]
         async with self.app.database.session() as session:
             async with session.begin():
@@ -52,7 +50,7 @@ class QuestionAccessor(BaseAccessor):
         async with self.app.database.session() as session:
             async with session.begin():
                 result = await session.scalars(query)
-                return result.unique()
+                return list(result.unique())
 
     async def get_random_questions(self) -> QuestionModel:
         query = select(QuestionModel.id)
