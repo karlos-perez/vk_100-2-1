@@ -51,8 +51,8 @@ class View(AiohttpView):
 app = Application()
 
 
-def setup_app() -> Application:
-    setup_config(app)
+def setup_app(config_path=None) -> Application:
+    setup_config(app, config_path)
     setup_logging(app)
     session_setup(
         app, EncryptedCookieStorage(app.config.session.key, cookie_name="sessionid")

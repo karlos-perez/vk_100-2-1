@@ -60,14 +60,15 @@ def get_database_url(conf) -> str:
 
 
 def get_config(path):
-    config_path = f"{path}/config.yml"
-    with open(config_path) as f:
+    if path is None:
+        path = f"{BASE_DIR}/config.yml"
+    with open(path) as f:
         parsed_config = yaml.safe_load(f)
     return parsed_config
 
 
-def setup_config(app: "Application"):
-    raw_config = get_config(BASE_DIR)
+def setup_config(app: "Application", config_path):
+    raw_config = get_config(config_path)
 
     app.config = Config(
         logger=LoggerConfig(

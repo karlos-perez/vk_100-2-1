@@ -34,7 +34,8 @@ target_metadata = db.metadata
 # ... etc.
 
 BASE_DIR = pathlib.Path(__file__).parent.parent
-conf = get_config(BASE_DIR)
+config_path = f"{BASE_DIR}/config.yml"
+conf = get_config(config_path)
 config.set_main_option("sqlalchemy.url", get_database_url(conf["database"]))
 
 

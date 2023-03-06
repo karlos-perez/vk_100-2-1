@@ -25,8 +25,6 @@ class Database:
         self.session = sessionmaker(
             self._engine, expire_on_commit=False, class_=AsyncSession
         )
-        # await self.clear()
-        # await self.create()
 
     async def disconnect(self, *args, **kwargs) -> None:
         try:
@@ -34,15 +32,12 @@ class Database:
         except Exception as err:
             self.logger.error(err)
 
-    async def create(self):
+    async def create(self, *args, **kwargs):
         async with self._engine.begin() as conn:
             db.metadata.bind = self._engine
             await conn.run_sync(db.metadata.create_all)
 
-    async def clear(self):
-        # async with self.app.database.session() as session:
-        #     await session.execute(text(f"TRUNCATE admins CASCADE"))
-        #     await session.commit()
+    async def clear(self, *args, **kwargs):
         async with self._engine.begin() as conn:
             db.metadata.bind = self._engine
             await conn.run_sync(db.metadata.drop_all)
