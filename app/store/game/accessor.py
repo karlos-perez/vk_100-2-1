@@ -44,6 +44,20 @@ class GameAccessor(BaseAccessor):
                 session.add(new_user)
         return new_user
 
+    async def get_or_create_user(self, user_id: int) -> UserModel:
+        """
+        Сhecking user. Get user from database or create new user
+        """
+        user = await self.get_user_by_id(user_id)
+        if user is None:
+            user_info = await self.app.store.vk_api.get_user_info(user_id)
+            user_fullname = (
+                f"{user_info[0].get('last_name', '')} "
+                f"{user_info[0].get('first_name', '')}"
+            )
+            user = await self.app.store.game.create_user(user_id, user_fullname)
+        return user
+
     async def create_participant(self, vk_id, game_id) -> ParticipantModel:
         async with self.app.database.session() as session:
             async with session.begin():
