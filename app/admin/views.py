@@ -79,6 +79,5 @@ class AdminStatisticUserView(AuthRequiredMixin, View):
     @response_schema(StatisticUserSchema, 200)
     async def get(self):
         statistic = await self.store.admins.get_user_statistic()
-        print(statistic)
         response = StatisticUserSchema().dump(statistic)
         return json_response(data=response)

@@ -56,10 +56,8 @@ class QuestionListView(AuthRequiredMixin, View):
     @querystring_schema(QuestionIdSchema)
     @response_schema(ListQuestionResponseSchema, 200)
     async def get(self):
-        question_id = self.request.query.get("question_id")
-        if question_id:
-            question_id = int(question_id)
-        questions = await self.store.questions.list_questions(question_id)
+        params = QuestionIdSchema().load(self.request.query)
+        questions = await self.store.questions.list_questions(params.get("question_id"))
         return json_response(
             data={"questions": [QuestionSchema().dump(q) for q in questions]}
         )
@@ -72,8 +70,9 @@ class QuestionDeleteView(AuthRequiredMixin, View):
     @querystring_schema(QuestionDeleteSchema)
     @response_schema(OkResponseSchema, 200)
     async def delete(self):
-        question_id = int(self.request.query.get("question_id"))
+        params = QuestionDeleteSchema().load(self.request.query)
+        question_id = params.get("question_id")
         if await self.store.questions.get_question_by_id(question_id) is None:
-            raise HTTPConflict(text=f"Question with this id not found")
+            raise HTTPNotFound(text=f"Question with this id not found")
         await self.store.questions.delete_question(question_id)
         return json_response(data={"message": "Question successfully deleted"})

@@ -22,11 +22,11 @@ class GameManager:
         self.logger = getLogger(self.__class__.__name__)
         self.response = GameResponse(app)
         self.state = None
-        self.stage = None  # Game stage
         # Last bot message
-        self.conversation_message_id: dict[int:int] = {}  # {chat_id: id_message}
+        self.conversation_message_id: dict[int, int] = {}  # {chat_id: id_message}
         app.on_startup.append(self.connect)
-        self.stage_game: dict[int:int] = {}  # {chat_id: STAGE}
+        # Dict stage in game
+        self.stage_game: dict[int, int] = {}  # {chat_id: STAGE}
 
     async def connect(self, *args, **kwargs):
         self.state = GameState(self.app)
@@ -40,28 +40,30 @@ class GameManager:
         for chat_id in games:
             if self.state.get_respondent_user(chat_id) is None:
                 # Active game and waiting pressing button "Answer"
-                self.stage = STAGE_WAIT_PRESS_ANSWER_BUTTON
+                self.stage_game[chat_id] = STAGE_WAIT_PRESS_ANSWER_BUTTON
                 question_str = self.state.get_question_in_str(chat_id)
                 await self.response.send_question(chat_id, question_str, "answer")
             else:
                 # Active game and waiting answer user
-                self.stage = STAGE_WAIT_ANSWER_FROM_USER
+                self.stage_game[chat_id] = STAGE_WAIT_ANSWER_FROM_USER
                 user_id = self.state.get_respondent_user(chat_id)
                 user = await self.app.store.game.get_user_by_id(user_id)
                 await self.response.send_respondent_user(chat_id, user.fullname)
-            self.logger.info(f"STAGE GAME in chat: {chat_id} - {self.stage}")
+            self.logger.info(f"STAGE GAME in chat: {chat_id} - "
+                             f"{self.stage_game.get(chat_id)}")
 
     async def handler_message_new(self, data: dict):
         chat_id = data["message"]["peer_id"]
-        user_id = data["message"]["from_id"]
-        await self.state.get_or_create_user(user_id)
-        text = data["message"]["text"].strip().lower()
-        if data["message"].get("conversation_message_id"):
-            self.conversation_message_id[chat_id] = data["message"].get(
-                "conversation_message_id"
-            )
         # Сhecking that the message came from the chat
+        # process message only from chats
         if chat_id > 2000000000:
+            user_id = data["message"]["from_id"]
+            await self.state.get_or_create_user(user_id)
+            text = data["message"]["text"].strip().lower()
+            if data["message"].get("conversation_message_id"):
+                self.conversation_message_id[chat_id] = data["message"].get(
+                    "conversation_message_id"
+                )
             if self.state.get_active_game(chat_id) is None:
                 if (
                     text == BotCommand.start
@@ -71,7 +73,7 @@ class GameManager:
                 if text == BotCommand.stop:  # command STOP
                     await self.game_action_stop(user_id, chat_id, STATUS_STOPPED)
                 else:
-                    if self.stage == STAGE_WAIT_ANSWER_FROM_USER:
+                    if self.stage_game.get(chat_id) == STAGE_WAIT_ANSWER_FROM_USER:
                         try:
                             await self.game_action_user_answer(user_id, chat_id, text)
                         except Exception as err:
@@ -143,7 +145,7 @@ class GameManager:
         await asyncio.sleep(1)  # frequency restrictions
         # Send who answer and added stop button
         await self.response.send_respondent_user(chat_id, user.fullname)
-        self.stage = STAGE_WAIT_ANSWER_FROM_USER
+        self.stage_game[chat_id] = STAGE_WAIT_ANSWER_FROM_USER
 
     async def game_action_user_answer(self, user_id: int, chat_id: int, text: str):
         respondent_id = self.state.get_respondent_user(chat_id)
@@ -182,7 +184,7 @@ class GameManager:
                     await self.response.send_question(
                         chat_id, self.state.get_question_in_str(chat_id), "answer"
                     )
-                    self.stage = STAGE_WAIT_PRESS_ANSWER_BUTTON
+                    self.self.stage_game[chat_id] = STAGE_WAIT_PRESS_ANSWER_BUTTON
             else:  # Right answer
                 stat = await self.state.correct_answer_on_question(
                     user_id, chat_id, answer
@@ -212,4 +214,4 @@ class GameManager:
                 await self.response.send_question(
                     chat_id, self.state.get_question_in_str(chat_id), "answer"
                 )
-                self.stage = STAGE_WAIT_PRESS_ANSWER_BUTTON
+                self.stage_game[chat_id] = STAGE_WAIT_PRESS_ANSWER_BUTTON

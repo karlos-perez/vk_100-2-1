@@ -33,8 +33,7 @@ class QuestionAccessor(BaseAccessor):
             .options(joinedload(QuestionModel.answers))
         )
         async with self.app.database.session() as session:
-            async with session.begin():
-                return await session.scalar(query)
+            return await session.scalar(query)
 
     async def list_questions(
         self, question_id: int | None = None
@@ -48,17 +47,15 @@ class QuestionAccessor(BaseAccessor):
                 .options(joinedload(QuestionModel.answers))
             )
         async with self.app.database.session() as session:
-            async with session.begin():
-                result = await session.scalars(query)
-                return list(result.unique())
+            result = await session.scalars(query)
+            return list(result.unique())
 
     async def get_random_questions(self) -> QuestionModel:
         query = select(QuestionModel.id)
         async with self.app.database.session() as session:
-            async with session.begin():
-                ids = await session.scalars(query)
-                random_id = random.choice(list(ids))
-                return await self.get_question_by_id(random_id)
+            ids = await session.scalars(query)
+            random_id = random.choice(list(ids))
+            return await self.get_question_by_id(random_id)
 
     async def delete_question(self, question_id: int):
         query = delete(QuestionModel).where(QuestionModel.id == question_id)
