@@ -27,9 +27,13 @@ class BotManager:
 
         self._conversation_message_id = {}
         self.respondent_user_games: dict[int:int] = {}  # {chat_id: UserModel.id}
-        self.guessed_answers_games: dict[int: list[str]] = {}  # {chat_id: ['str', 'str']}
+        self.guessed_answers_games: dict[
+            int : list[str]
+        ] = {}  # {chat_id: ['str', 'str']}
         self.format_question_games: dict[int : list[str]] = {}
-        self.losing_users_game: dict[int: list[int]] = {}  # {chat_id: [user_id, user_id]}
+        self.losing_users_game: dict[
+            int : list[int]
+        ] = {}  # {chat_id: [user_id, user_id]}
 
     async def handler_updates(self, updates: list[Update]):
         for update in updates:

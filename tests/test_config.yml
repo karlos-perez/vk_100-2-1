@@ -1,0 +1,23 @@
+app:
+   debug: false
+logger:
+  level: info
+session:
+  key: RnJQwbZ1aTkpf2KqEbLsfl5s5HsoPnKwZ948dln5oCU=
+admin:
+  email: admin@admin.com
+  password: admin
+bot:
+  token: group_token
+  group_id: 1
+database:
+  host: 0.0.0.0
+  port: 5432
+  user: test_user
+  password: test_pass
+  database: test
+queue:
+  enable: false
+  url: amqp://guest:guest@localhost/
+game:
+  sum_score: 100  # Sum score answers

@@ -14,6 +14,14 @@ class QuestionSchema(Schema):
     answers = fields.Nested(AnswerSchema, many=True, required=True)
 
 
+class QuestionIdSchema(Schema):
+    question_id = fields.Int(required=False)
+
+
+class QuestionDeleteSchema(Schema):
+    question_id = fields.Int(required=True)
+
+
 class ListQuestionSchema(Schema):
     questions = fields.Nested(QuestionSchema, many=True)
 

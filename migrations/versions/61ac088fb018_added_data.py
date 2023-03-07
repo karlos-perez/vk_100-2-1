@@ -25,6 +25,7 @@ BASE_DIR = pathlib.Path(__file__).parent.parent.parent
 file_data = f"{BASE_DIR}/migrations/questions.csv"
 
 debug = get_config(BASE_DIR)["app"]["debug"]
+SUM_SCORE_ANSWER = get_config(BASE_DIR)["game"]["sum_score"]
 
 
 def get_random_score(number: int, range_: int) -> list[int]:
@@ -53,7 +54,7 @@ def upgrade() -> None:
         for q in raw_questions:
             if len(q) != 7 or str(q[0]) in title:
                 continue
-            scores = get_random_score(6, 100)
+            scores = get_random_score(6, SUM_SCORE_ANSWER)
             answers_list = [AnswerModel(title=str(q[i + 1]).strip().lower(),
                                         score=scores[i]) for i in range(6)]
             question = QuestionModel(title=str(q[0]),
