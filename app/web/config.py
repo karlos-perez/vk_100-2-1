@@ -52,12 +52,12 @@ class QueueConfig:
 @dataclass
 class Config:
     admin: AdminConfig
-    bot: BotConfig = None
-    database: DatabaseConfig = None
-    logger: LoggerConfig = None
-    session: SessionConfig = None
-    queue: QueueConfig = None
-    game: GameConfig = None
+    bot: BotConfig | None = None
+    database: DatabaseConfig | None = None
+    logger: LoggerConfig | None = None
+    session: SessionConfig | None = None
+    queue: QueueConfig | None = None
+    game: GameConfig | None = None
 
 
 def get_database_url(conf) -> str:
@@ -83,17 +83,9 @@ def setup_config(app: "Application", config_path):
         session=SessionConfig(
             key=raw_config["session"]["key"],
         ),
-        admin=AdminConfig(
-            email=raw_config["admin"]["email"],
-            password=raw_config["admin"]["password"],
-        ),
-        bot=BotConfig(
-            token=raw_config["bot"]["token"],
-            group_id=raw_config["bot"]["group_id"],
-        ),
+        admin=AdminConfig(**raw_config["admin"]),
+        bot=BotConfig(**raw_config["bot"]),
         database=DatabaseConfig(url=get_database_url(raw_config["database"])),
-        queue=QueueConfig(
-            enable=raw_config["queue"]["enable"], url=raw_config["queue"]["url"]
-        ),
+        queue=QueueConfig(**raw_config["queue"]),
         game=GameConfig(sum_score=raw_config["game"]["sum_score"]),
     )

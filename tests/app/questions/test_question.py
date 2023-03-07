@@ -209,10 +209,10 @@ class TestQuestionDeleteView:
 
     async def test_question_not_exists(self, authed_cli):
         response = await authed_cli.delete(self.url, params={"question_id": 1})
-        assert response.status == 409
+        assert response.status == 404
         data = await response.json()
         assert data == error_response(
-            status="conflict",
+            status="not_found",
             message="Question with this id not found",
         )
 

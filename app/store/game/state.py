@@ -14,15 +14,15 @@ class GameState:
         self.logger = getLogger(self.__class__.__name__)
         # Simple memory storageЖ
         # Dict active games
-        self.active_games: dict[int:int] = {}  # {chat_id: GameModel.id}
+        self.active_games: dict[int, int] = {}  # {chat_id: GameModel.id}
         # Dict current question in games
-        self.question_games: dict[int:dict] = {}  # {chat_id: dict[QuestionModel]}
+        self.question_games: dict[int, dict] = {}  # {chat_id: dict[QuestionModel]}
         # Dict formatting question adn answers for a beautiful display
-        self.format_question_games: dict[int : list[str]] = {}  # {chat_id: list[str]}
+        self.format_question_games: dict[int, list[str]] = {}  # {chat_id: list[str]}
         # Dict of users who respond
-        self.respondent_users_games: dict[int:int] = {}  # {chat_id: UserModel.id}
+        self.respondent_users_games: dict[int, int] = {}  # {chat_id: UserModel.id}
         # Dict of current guessed answers in game
-        self.guessed_answers_games: dict[int:str] = {}  # {chat_id: list[str]}
+        self.guessed_answers_games: dict[int, str] = {}  # {chat_id: list[str]}
 
     async def restore_state(self):
         # TODO: not optimized
@@ -85,7 +85,7 @@ class GameState:
             return False
         return True
 
-    def get_active_game(self, chat_id: int) -> dict[int:int]:
+    def get_active_game(self, chat_id: int) -> dict[int, int]:
         return self.active_games.get(chat_id)
 
     def get_respondent_user(self, chat_id: int) -> UserModel.id:
