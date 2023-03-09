@@ -1,7 +1,7 @@
 import json
 import typing
 
-from app.store.game.dataclasses import BotAction
+from app.store.bot.dataclasses import BotAction
 
 
 class VkKeyboard:

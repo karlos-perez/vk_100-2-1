@@ -6,7 +6,8 @@ from aiohttp import TCPConnector
 from aiohttp.client import ClientSession
 
 from app.store.base_accessor import BaseAccessor
-from app.store.game.dataclasses import Message
+from app.store.bot.dataclasses import Message
+from app.store.utils import is_message_from_chat
 from app.store.vk_api.poller import Poller
 
 if typing.TYPE_CHECKING:
@@ -124,7 +125,7 @@ class VkApiAccessor(BaseAccessor):
             "message": message.text,
             "access_token": self.app.config.bot.token,
         }
-        if message.peer_id < 2000000000:
+        if not is_message_from_chat(message.peer_id):
             params["user_id"] = message.user_id
         if message.buttons:
             params["keyboard"] = message.buttons

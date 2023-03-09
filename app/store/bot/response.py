@@ -2,9 +2,9 @@ import typing
 from logging import getLogger
 
 from app.game.models import UserModel, STATUS_STOPPED, STATUS_FINISH
-from app.store.game.dataclasses import Message
-from app.store.game.keyboards import Keyboard as kb
-from app.store.game.text import Text
+from app.store.bot.dataclasses import Message
+from app.store.bot.keyboards import Keyboard as kb
+from app.store.bot.text import Text
 
 if typing.TYPE_CHECKING:
     from app.web.app import Application
@@ -18,6 +18,14 @@ class GameResponse:
     async def send_invite_start_game(self, chat_id: int):
         message = Message(peer_id=chat_id, text=Text.invite, buttons=kb.begin_game())
         return await self.app.store.vk_api.send_message(message)
+
+    async def send_invite_start_game_edit(self, chat_id: int, message_id: int):
+        message = Message(
+            user_id=message_id,
+            peer_id=chat_id,
+            text=Text.invite
+        )
+        return await self.app.store.vk_api.send_message_edit(message)
 
     async def send_game_rules(self, chat_id: int):
         message = Message(
@@ -79,8 +87,8 @@ class GameResponse:
         message = Message(peer_id=chat_id, text=text, buttons=kb.stop_button())
         await self.app.store.vk_api.send_message(message)
 
-    async def send_answer_correct(self, chat_id: int, stat: tuple[str, int]):
-        text = Text.right_answer.format(fullname=stat[0], score=stat[1])
+    async def send_answer_correct(self, chat_id: int, user_name: str, score: int):
+        text = Text.right_answer.format(fullname=user_name, score=score)
         message = Message(peer_id=chat_id, text=text, buttons=kb.stop_button())
         await self.app.store.vk_api.send_message(message)
 

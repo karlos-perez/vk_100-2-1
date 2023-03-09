@@ -22,3 +22,9 @@
 ### Cтруктура таблиц базы данных:
 
 ![db_scheme](img/database_scheme.png)
+
+### Cтруктура API проекта:
+
+![shema_api](img/swagger_api.png)
+
+#### Файл [swagger.json](swaggeer.json)

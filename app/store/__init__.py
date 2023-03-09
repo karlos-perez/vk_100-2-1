@@ -13,7 +13,6 @@ class Store:
         from app.store.questions.accessor import QuestionAccessor
         from app.store.vk_api.accessor import VkApiAccessor
         from app.store.game.accessor import GameAccessor
-        from app.store.game.manager import GameManager
         from app.store.bot.manager import BotManager
 
         self.admins = AdminAccessor(app)
@@ -22,7 +21,6 @@ class Store:
             self.queue = QueueAccessor(app)
         self.questions = QuestionAccessor(app)
         self.game = GameAccessor(app)
-        self.game_manager = GameManager(app)
         self.bot_manager = BotManager(app)
 
 
