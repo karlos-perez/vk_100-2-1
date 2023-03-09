@@ -14,6 +14,8 @@ if typing.TYPE_CHECKING:
     from app.web.app import Application
 
 
+ANSWERS_COUNT = 6
+
 STAGE_WAIT_PRESS_ANSWER_BUTTON = 1
 STAGE_WAIT_ANSWER_FROM_USER = 2
 
@@ -118,7 +120,8 @@ class BotManager:
             await self.game_action_rules(chat_id)
         # Start game
         elif type_event == BotAction.start_game:
-            await self.game_action_start(chat_id)
+            if self.state.get_active_game(chat_id) is None:
+                await self.game_action_start(chat_id)
         # Touch Answer
         elif type_event == BotAction.touch_answer:
             await self.game_action_touch_answer(user_id, chat_id, data["event_id"])
@@ -255,7 +258,7 @@ class BotManager:
         return False
 
     def is_game_over(self, chat_id: int) -> bool:
-        if len(self.state.get_guessed(chat_id)) >= 6:
+        if len(self.state.get_guessed(chat_id)) >= ANSWERS_COUNT:
             return True
         return False
 
