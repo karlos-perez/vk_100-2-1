@@ -1,4 +1,3 @@
-import asyncio
 import typing
 from datetime import datetime
 from logging import getLogger
@@ -6,7 +5,7 @@ from logging import getLogger
 from app.game.models import STATUS_STOPPED, STATUS_ERROR, STATUS_FINISH
 from app.store.bot.dataclasses import EventType, BotCommand, BotAction
 from app.store.bot.response import GameResponse
-from app.store.game.state import GameState
+from app.store.game.state import GameState, ANSWERS_COUNT
 from app.store.utils import is_message_from_chat
 from app.store.vk_api.dataclasses import Update
 
@@ -14,7 +13,6 @@ if typing.TYPE_CHECKING:
     from app.web.app import Application
 
 
-ANSWERS_COUNT = 6
 
 STAGE_WAIT_PRESS_ANSWER_BUTTON = 1
 STAGE_WAIT_ANSWER_FROM_USER = 2
@@ -145,7 +143,6 @@ class BotManager:
             chat_id=chat_id, date=datetime.now(), question_id=question.id
         )
         format_question = self.state.set_start_game(chat_id, game.id, question)
-        await asyncio.sleep(1)  # frequency restrictions
         await self.response.send_question(chat_id, format_question, "answer")
 
     async def game_action_stop(self, user_id: int, chat_id: int, reason: int):
@@ -155,15 +152,12 @@ class BotManager:
         user_who_stopped = await self.app.store.game.get_user_by_id(user_id)
         stat = [(u.score, u.user.fullname) for u in users_statistic]
         await self.response.send_end_game(user_who_stopped, chat_id, reason, stat)
-        await asyncio.sleep(1)  # frequency restrictions
 
         if final_question is not None:
             await self.response.send_question(chat_id, final_question, "empty")
-            await asyncio.sleep(1)
         await self.response.send_invite_start_game(chat_id)
 
     async def game_action_touch_answer(self, user_id: int, chat_id: int, event_id: str):
-        # permission = await self.state.can_user_respond(user_id, chat_id)
         if not await self.can_user_respond(user_id, chat_id):
             # Send snackbar user - he loser
             await self.response.send_snackbar(user_id, chat_id, event_id)
@@ -175,7 +169,6 @@ class BotManager:
             chat_id, self.conversation_message_id[chat_id], question_str
         )
         user = await self.app.store.game.get_user_by_id(user_id)
-        await asyncio.sleep(1)  # frequency restrictions
         # Send who answer and added stop button
         await self.response.send_respondent_user(chat_id, user.fullname)
         self.stage_game[chat_id] = STAGE_WAIT_ANSWER_FROM_USER
@@ -211,14 +204,12 @@ class BotManager:
             await self.response.send_answer_correct(chat_id,
                                                     participant.user.fullname,
                                                     score_answer)
-            await asyncio.sleep(1)  # frequency restrictions
 
             if self.is_game_over(chat_id):
                 await self.game_action_stop(user_id, chat_id, STATUS_FINISH)
             else:
                 question_str = self.state.get_question_in_str(chat_id)
                 await self.response.send_question(chat_id, question_str, "stop")
-                await asyncio.sleep(1)  # frequency restrictions
                 # Checking game over
                 await self.response.send_respondent_user(chat_id,
                                                          participant.user.fullname)
@@ -237,7 +228,6 @@ class BotManager:
                     participant.score,
                     attempts
                 )
-                await asyncio.sleep(1)  # frequency restrictions
                 await self.response.send_question(
                     chat_id, self.state.get_question_in_str(chat_id), "answer"
                 )
