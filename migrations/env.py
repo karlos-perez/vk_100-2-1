@@ -1,5 +1,4 @@
 import asyncio
-import pathlib
 from logging.config import fileConfig
 
 from sqlalchemy import engine_from_config
@@ -12,7 +11,8 @@ from alembic import context
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
 from app.store.database import db
-from app.web.config import get_config, get_database_url
+from app.web.config import config as app_config
+from app.web.config import get_database_url
 
 config = context.config
 
@@ -33,10 +33,7 @@ target_metadata = db.metadata
 # my_important_option = config.get_main_option("my_important_option")
 # ... etc.
 
-BASE_DIR = pathlib.Path(__file__).parent.parent
-config_path = f"{BASE_DIR}/config.yml"
-conf = get_config(config_path)
-config.set_main_option("sqlalchemy.url", get_database_url(conf["database"]))
+config.set_main_option("sqlalchemy.url", get_database_url(app_config["database"]))
 
 
 def run_migrations_offline() -> None:

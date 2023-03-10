@@ -10,11 +10,10 @@ import pathlib
 import random
 
 from alembic import op
-import sqlalchemy as sa
 from sqlalchemy import orm
 
 from app.questions.models import QuestionModel, AnswerModel
-from app.web.config import get_config
+from app.web.config import config as app_config
 # revision identifiers, used by Alembic.
 revision = 'b7102b92df61'
 down_revision = '6ebd284fed25'
@@ -24,8 +23,8 @@ depends_on = None
 BASE_DIR = pathlib.Path(__file__).parent.parent.parent
 file_data = f"{BASE_DIR}/migrations/questions.csv"
 
-debug = get_config(BASE_DIR)["app"]["debug"]
-SUM_SCORE_ANSWER = get_config(BASE_DIR)["game"]["sum_score"]
+debug = app_config["app"]["debug"]
+SUM_SCORE_ANSWER = app_config["game"]["sum_score"]
 
 
 def get_random_score(number: int, range_: int) -> list[int]:

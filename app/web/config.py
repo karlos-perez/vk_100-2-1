@@ -67,7 +67,7 @@ def get_database_url(conf) -> str:
 
 def get_config(path):
     if path is None:
-        path = f"{BASE_DIR}/config.yml"
+        path = f"{BASE_DIR}/configs/config.yml"
     with open(path) as f:
         parsed_config = yaml.safe_load(f)
     return parsed_config
@@ -89,3 +89,6 @@ def setup_config(app: "Application", config_path):
         queue=QueueConfig(**raw_config["queue"]),
         game=GameConfig(sum_score=raw_config["game"]["sum_score"]),
     )
+
+
+config = get_config(None)
