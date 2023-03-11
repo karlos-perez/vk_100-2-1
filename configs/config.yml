@@ -8,7 +8,7 @@ admin:
 session:
   key: SnJQwbZ1aTkpf9KqEbLsfl5A5HsoPnKwZ948dln5oCI=
 database:
-  host: 0.0.0.0
+  host: postgres
   port: 5432
   user: chief
   password: chief_paSS
@@ -18,6 +18,8 @@ bot:
   group_id: 218728299
 queue:
   enable: true
-  url: amqp://guest:guest@localhost/
+  url: amqp://guest:guest@rabbitMQ/
 game:
-  sum_score: 100  # Sum score answers
+  sum_score: 100
+server:
+  port: 8000

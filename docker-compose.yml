@@ -1,0 +1,34 @@
+version: "3.8"
+
+services:
+  server:
+    image: app:latest
+    depends_on:
+      - rabbitMQ
+      - postgres
+    ports:
+      - 8000:8000
+    networks:
+      - game
+  postgres:
+    build:
+      context: ./docker
+      dockerfile: db.Dockerfile
+    environment:
+      POSTGRES_USERNAME: postgres
+      POSTGRES_PASSWORD: postgres
+      PGDATA: /var/lib/postgresql/data
+    volumes:
+      - ./volumes:/var/lib/postgresql/data
+    networks:
+      - game
+    ports:
+      - 5432:5432
+  rabbitMQ:
+    image: rabbitmq:latest
+    networks:
+      - game
+networks:
+  game:
+    enable_ipv6: false
+    driver: bridge

@@ -132,4 +132,11 @@ dmypy.json
 .idea
 
 # Temp directory
-temp
+temp/
+
+# Postgres volumes
+volumes/
+
+# Docker
+.dockerignore
+

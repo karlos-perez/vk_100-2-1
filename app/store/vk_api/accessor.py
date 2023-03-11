@@ -1,4 +1,5 @@
 import json
+import random
 import time
 import typing
 
@@ -120,7 +121,7 @@ class VkApiAccessor(BaseAccessor):
 
     async def send_message(self, message: Message) -> None:
         params = {
-            "random_id": int(time.time()),
+            "random_id": random.randint(1, 2 ** 32),
             "peer_id": message.peer_id,
             "message": message.text,
             "access_token": self.app.config.bot.token,

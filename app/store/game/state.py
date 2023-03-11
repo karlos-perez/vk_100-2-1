@@ -9,6 +9,9 @@ if typing.TYPE_CHECKING:
     from app.web.app import Application
 
 
+ANSWERS_COUNT = 6
+
+
 class GameState:
     def __init__(self, app: "Application"):
         self.app = app
@@ -42,16 +45,13 @@ class GameState:
                 self.active_games[g.chat_id] = g.id
                 self.question_games[g.chat_id] = g.question.to_dict()
                 self.format_question_games[g.chat_id] = [g.question.title]
-                x = ["XXXXXX"] * 6
+                x = ["XXXXXX"] * ANSWERS_COUNT
                 self.format_question_games[g.chat_id].extend(x)
                 correct_answers = await self.app.store.game.get_correct_answers(g.id)
                 if correct_answers:
-                    print(correct_answers)
                     index = 1
                     unique_answers = [a.answer for a in correct_answers]
-                    print(unique_answers)
                     for a in set(unique_answers):
-                        print(a)
                         self.set_guessed(g.chat_id, a)
                         self.format_question_games[g.chat_id][index] = a
                         index += 1
@@ -96,7 +96,7 @@ class GameState:
 
     def get_question_in_str_end(self, chat_id: int) -> str | None:
         guessed_answer = self.get_guessed(chat_id)
-        if len(guessed_answer) >= 6:
+        if len(guessed_answer) >= ANSWERS_COUNT:
             return self.get_question_in_str(chat_id)
         else:
             format_answer = self.format_question_games.get(chat_id)
@@ -122,7 +122,7 @@ class GameState:
         self.question_games[chat_id] = question.to_dict()
         # Format display question
         self.format_question_games[chat_id] = [question.title]
-        x = ["XXXXXX"] * 6
+        x = ["XXXXXX"] * ANSWERS_COUNT
         self.format_question_games[chat_id].extend(x)
         return "<br>".join(self.format_question_games[chat_id])
 

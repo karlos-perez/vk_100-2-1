@@ -1,0 +1,25 @@
+app:
+   debug: false
+logger:
+  level: error
+admin:
+  email: kralexol@ya.ru
+  password: adminPass
+session:
+  key: SnJQwbZ1aTkpf9KqEbLsfl5A5HsoPnKwZ948dln5oCI=
+database:
+  host: $DATABASE_HOST
+  port: $DATABASE_PORT
+  user: $DATABASE_USER
+  password: $DATABASE_PASSWORD
+  database: $DATABASE_NAME
+bot:
+  token: $VK_TOKEN
+  group_id: $VK_GROUP
+queue:
+  enable: true
+  url: $QUEUE_URL
+game:
+  sum_score: 100
+server:
+  port: $PORT

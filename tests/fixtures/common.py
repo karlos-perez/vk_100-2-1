@@ -15,7 +15,7 @@ from app.web.app import setup_app, Application
 from app.web.config import Config
 
 
-BASE_DIR = pathlib.Path(__file__).parent.parent
+BASE_DIR = pathlib.Path(__file__).parent.parent.parent
 
 DEFAULT_TIME = datetime(2022, 3, 6, 0)
 
@@ -28,7 +28,7 @@ def event_loop():
 
 @pytest.fixture(scope="session")
 async def server() -> Application:
-    config_path = f"{BASE_DIR}/test_config.yml"
+    config_path = f"{BASE_DIR}/configs/test_config.yml"
     app = setup_app(config_path)
     return app
 
