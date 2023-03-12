@@ -1,15 +1,6 @@
 version: "3.8"
 
 services:
-  server:
-    image: app:latest
-    depends_on:
-      - rabbitMQ
-      - postgres
-    ports:
-      - 8000:8000
-    networks:
-      - game
   postgres:
     build:
       context: ./docker
@@ -28,6 +19,16 @@ services:
     image: rabbitmq:latest
     networks:
       - game
+  server:
+    image: app:latest
+    depends_on:
+      - rabbitMQ
+      - postgres
+    ports:
+      - 8000:8000
+    networks:
+      - game
+    restart: unless-stopped
 networks:
   game:
     enable_ipv6: false
