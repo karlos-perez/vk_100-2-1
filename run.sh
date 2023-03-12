@@ -1,5 +1,5 @@
 #!/bin/bash
-cat configs/prod_config.yaml | envsubst > configs/config.yaml
+cat configs/prod_config.yml | envsubst > configs/config.yml
 
 sleep 10
 
