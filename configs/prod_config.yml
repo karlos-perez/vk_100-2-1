@@ -8,18 +8,18 @@ admin:
 session:
   key: SnJQwbZ1aTkpf9KqEbLsfl5A5HsoPnKwZ948dln5oCI=
 database:
-  host: $DATABASE_HOST
-  port: $DATABASE_PORT
-  user: $DATABASE_USER
-  password: $DATABASE_PASSWORD
-  database: $DATABASE_NAME
+  host: postgres
+  port: 5432
+  user: chief
+  password: chief_paSS
+  database: hundred2one
 bot:
-  token: $VK_TOKEN
-  group_id: $VK_GROUP
+  token: vk1.a.RTe7vgt8Ser0JYM0n_JmeSV5meLiAnUZV-eZVb8klDjvK0O9yjEyiMSUtPXFaq_44lkF3bPWsYx3vvv4BopRtyUj46_NXQAqgEc-BAeHqrqa1nTRzRDIryflHHPVjK2tN9skPShL_bEfz_cGPa1N7jpVyNlTPPe5_xFfS3D60N8czAH0slM1Iuf8n9psAx7g-MPlKdO9yj1jIjj_Iz43-w
+  group_id: 218728299
 queue:
   enable: true
-  url: $QUEUE_URL
+  url: amqp://guest:guest@rabbitMQ/
 game:
   sum_score: 100
 server:
-  port: $PORT
+  port: 8000

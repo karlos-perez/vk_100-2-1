@@ -1,7 +1,7 @@
 #!/bin/bash
-#cat config/prod_config.yaml | envsubst > config/config.yaml
+cat configs/prod_config.yaml | envsubst > configs/config.yaml
 
-sleep 5
+sleep 10
 
 echo Starting Alembic migrations
 alembic upgrade head
