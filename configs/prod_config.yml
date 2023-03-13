@@ -1,7 +1,7 @@
 app:
    debug: false
 logger:
-  level: error
+  level: info
 admin:
   email: kralexol@ya.ru
   password: adminPass
